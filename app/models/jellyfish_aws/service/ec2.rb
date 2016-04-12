@@ -18,7 +18,7 @@ module JellyfishAws
             image_id: self.product.answers.find { |x| x.name == 'image_id' }.value,
             flavor_id: 't2.micro',
             key_name: 'rhel-client',
-            security_group_ids: ['sg-efb76e89']
+            security_group_ids: ['sg-96d2efee']
           }
 
           # CREATE THE AWS SERVER AND WAIT FOR CALLBACK
