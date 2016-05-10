@@ -9,6 +9,13 @@ module JellyfishAws
       def service_class
         'JellyfishAws::Service::Ec2'.constantize
       end
+
+      private
+
+      def init
+        super
+        self.img = 'products/aws_ec2.png'
+      end
     end
   end
 end
