@@ -42,6 +42,18 @@ module JellyfishAws
           # SAVE PRODUCT DETAILS
           save_outputs(details, [ [ 'image_id', :image_id], [ 'flavor_id', :flavor_id ], [ 'key_name', :key_name ], ['vpc_id', :vpc_id], ['subnet_id', :subnet_id ], ['security_group_ids', :security_group_ids] ], ValueTypes::TYPES[:string]) if defined? details
 
+          aws_public_ip = nil
+          last_odl_service = nil
+          begin
+            # GET AWS PUBLIC IP SAVED FROM EC2 PROVISIONING
+            aws_public_ip = self.service_outputs.where(name: 'public_ip_address').last.value
+            # GET THE LAST JellyfishOdl SERVICE ADDED TO THIS EC2 SERVICE'S PROJECT
+            last_odl_service = self.project.services.find_all { |s| /JellyfishOdl/ =~ s.type }.last
+            # CREATE A FIREWALL RULE IF THE ODL PROVIDER AND AWS PUBLIC IP EXISTS
+            last_odl_service.provider.odl_firewall.create_auto_rule(aws_public_ip) unless (aws_public_ip.nil? || last_odl_service.nil?)
+          rescue
+          end
+
           # UPDATE STATUS
           update_status(::Service.defined_enums['status']['running'], 'running')
         end
